@@ -1,4 +1,4 @@
-#include "Timer.h"
+#include "Timer0.h"
 
 static volatile Time GlobalTime=0;
 
