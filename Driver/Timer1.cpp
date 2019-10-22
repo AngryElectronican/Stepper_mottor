@@ -41,7 +41,7 @@ void Timer1_Enable(void){
     TIMSK1|=(1<<OCIE1A);
 }
 void Timer1_RotateSteps(long steps_r){
-    steps=steps_r;
+    steps=steps_r*2;
 }
 void Timer1_LinearMove(uint8_t dir){
     move_flag=dir;
