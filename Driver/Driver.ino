@@ -11,7 +11,7 @@
 #include "Timer1.h"
 unsigned char data[10]={0};
 
-uint8_t counter=0, flag=0;
+uint8_t counter=0;
 
 Time timer1=0;
 int main(){
@@ -27,7 +27,7 @@ int main(){
   Timer1_Init(DEVIDER);
   Timer0_Init();
   Timer0_StartTimer(&timer1);
-  TIMSK1|=(1<<OCIE1A);
+  
   sei();
   for(int i=0;;){
 
@@ -37,14 +37,14 @@ int main(){
       if(temp=='\n' || temp=='\r'){
         USART_Transmit(counter+'0');
         i=0;
-        steps=0;
-        TIMSK1&=~(1<<OCIE1A);
+        Timer1_RotateSteps(0);
+        Timer1_Disable();
         if(counter==0){
-          steps=2*atoi(data)+2;
+          Timer1_RotateSteps(2*atoi(data)+2);
         }else{
-          steps=2*atoi(data);
+          Timer1_RotateSteps(2*atoi(data));
         }
-        TIMSK1|=(1<<OCIE1A);
+        Timer1_Enable();
         counter++;
         if(counter>=7) counter=0;
         for(int j=0;j<10;data[j++]=0);
@@ -58,21 +58,36 @@ int main(){
       for(uint8_t j=0;j<4;j++){
           curr_flags[j]=(!((PINC>>j)&1));//Read !pin
         }
+        
         if(curr_flags[0]==1 && prev_flags[0]==0){
-          steps=57*2;
+          Timer1_Disable();
+          Timer1_RotateSteps(57*2);
+          Timer1_Enable();
         }else if (curr_flags[1]==1 && prev_flags[1]==0){
-          steps=-57*2;
+          Timer1_Disable();
+          Timer1_RotateSteps(-57*2);
+          Timer1_Enable();
         }
+        for(uint8_t k=0;k<4;k++){
+          USART_Transmit(curr_flags[k]+'0');
+          }
+          USART_Transmit('\n');
+          for(uint8_t k=0;k<4;k++){
+          USART_Transmit(prev_flags[k]+'0');
+          }
+          USART_Transmit('\n');
+          USART_Transmit('\n');
+          prev_flags[0]=curr_flags[0];
+          prev_flags[1]=curr_flags[1];
         if(curr_flags[2]==1){
-          flag=1;
+          Timer1_LinearMove(1);
         }else if(curr_flags[3]==1){
-          flag=2;
+          Timer1_LinearMove(2);
         }else{
-          flag=0;
+          Timer1_LinearMove(0);
         }
       DDRB|=1<<PB5;
       PORTB^=1<<PB5;
-      for(uint8_t j;j<4;prev_flags[j]=curr_flags[j])j++;// prev=curr
       Timer0_StartTimer(&timer1);
     }
   }

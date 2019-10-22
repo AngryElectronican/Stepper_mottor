@@ -14,6 +14,8 @@
 #define CCW PC3
 
 void Timer1_Init(uint16_t devider);
-void Timer1_RotateSteps(long steps);
-void Timer1_LinearSteps(long steps);
+void Timer1_Disable(void);
+void Timer1_Enable(void);
+void Timer1_RotateSteps(long steps_r);
+void Timer1_LinearMove(uint8_t steps_l);
 #endif
