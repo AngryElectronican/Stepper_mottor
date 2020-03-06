@@ -33,6 +33,8 @@ void Timer1_Init(uint16_t devider){
     TCCR1B|=(1<<CS10);  //no prescaler
     OCR1A=devider;       // 5000 Hz
     TIMSK1|=(1<<OCIE1A);
+    DDRD|=(1<<EN1)|(1<<DIR1)|(1<<STEP1);
+    PORTD|=1<<EN1;
 }
 void Timer1_Disable(void){
     TIMSK1&=~(1<<OCIE1A);

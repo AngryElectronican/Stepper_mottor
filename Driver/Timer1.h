@@ -1,10 +1,18 @@
 #ifndef _TIMER1_H_
 #define _TIMER1_H_
 
+#define FOSC 16000000 // Clock Speed
+#define BAUD 9600
+#define MYUBRR FOSC/16/BAUD-1
+#define STEP 200
+#define STEP_DEVIDER 8
+#define DEVIDER FOSC/STEP/STEP_DEVIDER/2
+
 #include <avr/interrupt.h>
-#define EN1 PD2
-#define DIR1 PD3
-#define STEP1 PD4
+
+#define EN1 PD3
+#define DIR1 PD4
+#define STEP1 PD5
 
 #define BUTTON_PORT PORTC
 
